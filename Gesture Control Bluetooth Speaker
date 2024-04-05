@@ -1,1 +1,94 @@
+#include &lt;
+DFRobot_PAJ7620U2.h&gt;
+DFRobot_PAJ7620U2 paj;
+#define volumeUP D7
+#define volumeDOWN D6
 
+
+#define mode D5
+#define pausePlay D8
+#define light D4
+void setup() {
+pinMode(volumeUP, OUTPUT);
+pinMode(volumeDOWN, OUTPUT);
+pinMode(mode, OUTPUT);
+pinMode(pausePlay, OUTPUT);
+pinMode(light, OUTPUT);
+digitalWrite(volumeUP, 0);
+digitalWrite(volumeDOWN, 0);
+digitalWrite(mode, 0);
+digitalWrite(pausePlay, 0);
+digitalWrite(light, 0);
+Serial.begin(115200);
+delay(300);
+Serial.println(&quot;Gesture recognition system base on PAJ7620U2&quot;);
+while (paj.begin() != 0) {
+Serial.println(&quot;initial PAJ7620U2 failure! Please check if all the
+connections are fine, or if the wire sequence is correct?&quot;);
+delay(500);
+}
+Serial.println(&quot;PAJ7620U2 init completed, start to test the gesture
+recognition function&quot;);
+paj.setGestureHighRate(true);
+}
+void blink() {
+digitalWrite(light, 1);
+delay(200);
+digitalWrite(light, 0);
+}
+void loop() {
+DFRobot_PAJ7620U2::eGesture_t gesture = paj.getGesture();
+if (gesture != paj.eGestureNone) {
+
+String description = paj.gestureDescription(gesture); //Convert gesture
+number into string description
+Serial.println(&quot;--------------Gesture Recognition System-------------------------
+--&quot;);
+Serial.print(&quot;gesture code = &quot;);
+Serial.println(gesture);
+Serial.print(&quot;gesture description = &quot;);
+Serial.println(description);
+Serial.println();
+if (gesture == 4) {
+blink();
+digitalWrite(volumeUP, 1);
+delay(800);
+digitalWrite(volumeUP, 0);
+} else if (gesture == 8) {
+blink();
+digitalWrite(volumeDOWN, 1);
+delay(800);
+digitalWrite(volumeDOWN, 0);
+} else if (gesture == 1) {
+blink();
+digitalWrite(volumeUP, 1);
+delay(250);
+digitalWrite(volumeUP, 0);
+} else if (gesture == 2) {
+blink();
+digitalWrite(volumeDOWN, 1);
+delay(250);
+digitalWrite(volumeDOWN, 0);
+} else if ((gesture == 128) &amp;&amp; (gesture == 32)) {
+blink();
+digitalWrite(pausePlay, 1);
+delay(200);
+digitalWrite(pausePlay, 0);
+} else if (gesture == 64) {
+blink();
+digitalWrite(mode, 1);
+delay(250);
+digitalWrite(mode, 0);
+
+} else {
+blink();
+Serial.println(&quot;--------------Gesture Recognition System-----------------------
+----&quot;);
+Serial.print(&quot;gesture code = &quot;);
+Serial.println(gesture);
+Serial.print(&quot;gesture description = &quot;);
+Serial.println(description);
+Serial.println();
+}
+}
+}
